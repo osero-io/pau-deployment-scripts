@@ -71,3 +71,42 @@ deploy-pau-mainnet:
 deploy-pau-mainnet-dryrun:
 	forge script script/DeployPAU.s.sol:DeployPAUScript \
 		--sender $(ETH_FROM) --account deployer --rpc-url $(MAINNET_RPC_URL)
+
+# --------------------------------------------------------------------------------------------------
+# Base (chain 8453)                                                                                #
+# --------------------------------------------------------------------------------------------------
+# Same deploy -> validate -> activate sequence as mainnet, against the `base` RPC alias.
+#
+# Prerequisites: BASE_RPC_URL, ETH_FROM (the Base deployer). The signer defaults to the "deployer"
+# keystore account; override DEPLOY_SIGNER for a hardware wallet, e.g.
+#   make deploy-pau-base DEPLOY_SIGNER="--ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/0\""
+# (keep the inner double quotes: HD paths contain ' which the recipe shell would otherwise eat)
+#
+# Input:  script/input/8453/deploy-pau.json (owner = Osero Executor on Base; factories and Beacon
+#         from Atlas A.2.2.10.1.1.1.2.3.3 - Base)
+# Output: script/output/8453/deploy-pau-latest.json
+#
+# The post-deploy targets fork `base` through POSTDEPLOY_RPC; POSTDEPLOY_BLOCK and
+# POSTDEPLOY_FROM_BLOCK work as for mainnet. POSTDEPLOY_OUTPUT_BASE overrides the export to check.
+
+DEPLOY_SIGNER          ?= --account deployer
+POSTDEPLOY_OUTPUT_BASE ?= script/output/8453/deploy-pau-latest.json
+
+test-fork-base:
+	forge test --match-path "test/base-fork/*" -vvv
+
+test-postdeploy-base-simulate:
+	POSTDEPLOY_RPC=base POSTDEPLOY_SIMULATE=true forge test --match-path "test/post-deploy/*" -vvv
+
+test-postdeploy-base:
+	POSTDEPLOY_RPC=base POSTDEPLOY_OUTPUT=$(POSTDEPLOY_OUTPUT_BASE) \
+		forge test --match-path "test/post-deploy/*" -vvv
+
+deploy-pau-base:
+	forge script script/DeployPAU.s.sol:DeployPAUScript \
+		--sender $(ETH_FROM) $(DEPLOY_SIGNER) --broadcast \
+		--rpc-url $(BASE_RPC_URL)
+
+deploy-pau-base-dryrun:
+	forge script script/DeployPAU.s.sol:DeployPAUScript \
+		--sender $(ETH_FROM) $(DEPLOY_SIGNER) --rpc-url $(BASE_RPC_URL)

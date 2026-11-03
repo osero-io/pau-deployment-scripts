@@ -34,7 +34,8 @@ import {
  *                         (sender = factory) and nothing else,
  *           - state:      `owner` is admin, no activation has happened, Controller wiring matches.
  *
- * @dev    Modes (both fork `mainnet`, optionally at `POSTDEPLOY_BLOCK`, default latest):
+ * @dev    Modes (both fork the `POSTDEPLOY_RPC` alias or URL, default `mainnet`, optionally at
+ *         `POSTDEPLOY_BLOCK`, default latest; input and output paths follow the fork's chain id):
  *
  *         - `POSTDEPLOY_OUTPUT=<path>`: verify a real deployment. The path is relative to the
  *           project root (e.g. `script/output/1/deploy-pau-latest.json`); logs come from the
@@ -80,10 +81,11 @@ contract PostDeployTests is PostDeployTestBase {
             return;
         }
 
-        uint256 forkBlock = vm.envOr("POSTDEPLOY_BLOCK", uint256(0));
+        string memory rpc       = vm.envOr("POSTDEPLOY_RPC", string("mainnet"));
+        uint256       forkBlock = vm.envOr("POSTDEPLOY_BLOCK", uint256(0));
 
-        if (forkBlock == 0) vm.createSelectFork("mainnet");
-        else                vm.createSelectFork("mainnet", forkBlock);
+        if (forkBlock == 0) vm.createSelectFork(rpc);
+        else                vm.createSelectFork(rpc, forkBlock);
 
         if (simulateEnv) {
             outputPath = string.concat(

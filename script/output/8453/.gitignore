@@ -1,0 +1,4 @@
+# Real run outputs (script/DeployPAU.s.sol writes deploy-pau-latest.json) are generated and must
+# not be committed. Keep the directory and this file itself.
+*
+!.gitignore
