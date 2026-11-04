@@ -1,0 +1,8 @@
+{
+  "owner": "0x5528A5A043F74C2250c0d0983E4633F38395e19F",
+  "pauFactory": "0x011A115b5498B85b3d12245A3a7296F77325B5C3",
+  "agentFactory": "0xD711DbfD937a45e2C89CA0D4781cfa5BAb32e752",
+  "beacon": "0x7ac96180C4d6b2A328D3a19ac059D0E7Fc3C6d41",
+  "stackCount": 1,
+  "agentCount": 1
+}

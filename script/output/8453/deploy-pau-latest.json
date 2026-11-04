@@ -1,0 +1,21 @@
+{
+  "accessControls": [
+    "0xBF79Eed65E43323893F604386CC2635C2cB03f2d"
+  ],
+  "agentFactory": "0xD711DbfD937a45e2C89CA0D4781cfa5BAb32e752",
+  "allocatorAgents": [
+    "0xFeC5e58eED607f240e73beA20F5b43c262bb61AB"
+  ],
+  "almProxy": "0x61ee4C5157AC876D1F5132Dc6832AC4896F533C9",
+  "beacon": "0x7ac96180C4d6b2A328D3a19ac059D0E7Fc3C6d41",
+  "controllers": [
+    "0x96F18963c1B1Dd83bB4D14119cF2C4b94F86d6a9"
+  ],
+  "deployBlock": 53475659,
+  "deployer": "0x3841ec3CB6aEE239ecD43d49755F6f25aDcA9D5C",
+  "owner": "0x5528A5A043F74C2250c0d0983E4633F38395e19F",
+  "pauFactory": "0x011A115b5498B85b3d12245A3a7296F77325B5C3",
+  "rateLimits": [
+    "0xd9E629588c48722E4c1bfcfb17829FecAf73839f"
+  ]
+}

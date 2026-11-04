@@ -27,6 +27,7 @@ spell, which calls the component repos' internal init libraries — `PAUInit`
 │       └── {chainId}/
 │           └── deploy-pau-latest.json   # exported addresses + deployBlock + deployer (generated)
 └── test/
+    ├── base-fork/                       # Base input: deploy + activation through the Osero Executor on Base
     ├── mainnet-fork/                    # deploy + init fork tests against the canonical factories
     ├── post-deploy/                     # verifies a real deployment's output JSON against mined logs
     └── utils/
@@ -81,4 +82,26 @@ The same assertions run in two modes:
   transaction is also fetched and asserted to have been sent by the export's `deployer` to the
   factory, so verify mode needs forge >= 1.8.
 
-The suite is skipped when neither variable is set.
+The suite is skipped when neither variable is set. Both modes fork the `POSTDEPLOY_RPC` alias
+(default `mainnet`); input and output paths follow the fork's chain id.
+
+### Base (chain 8453)
+
+`script/input/8453/deploy-pau.json` deploys one stack and one AdministeredAgent, owned by the
+Osero Executor on Base (`0x5528A5A043F74C2250c0d0983E4633F38395e19F`). That Executor only runs
+spells the Osero SubProxy relays from Ethereum Mainnet, through the Osero Receiver on Base
+(`0x63B4A33770F58205F3D646C5A635fF417a3819C3`). The SubProxy itself is not an account on Base, so
+it must not be `owner` here. The factories and Beacon are the ones in Atlas
+A.2.2.10.1.1.1.2.3.3 - Base; `sky-pau-registry` has no Base file yet.
+
+```bash
+export BASE_RPC_URL=<base rpc> ETH_FROM=<base deployer>
+make test-fork-base                  # deploy + activate through the live Osero Executor on a Base fork
+make test-postdeploy-base-simulate   # runs the script on a Base fork and verifies the result
+make deploy-pau-base-dryrun
+make deploy-pau-base                 # Ledger: DEPLOY_SIGNER="--ledger --mnemonic-derivation-paths \"<hd-path>\""
+POSTDEPLOY_BLOCK=<final-deployment-block> make test-postdeploy-base
+```
+
+`test/base-fork/` pins Base block 53474900 and reads the Base input file, so changing the input
+is covered by those tests.
